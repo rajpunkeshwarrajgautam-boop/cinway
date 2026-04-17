@@ -13,10 +13,8 @@ const nextConfig = {
       }
     ]
   },
-  // Required for Prisma edge compatibility on Vercel
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'bcrypt']
-  }
+  serverExternalPackages: ['@prisma/client', 'bcrypt']
 };
 
 export default nextConfig;
+

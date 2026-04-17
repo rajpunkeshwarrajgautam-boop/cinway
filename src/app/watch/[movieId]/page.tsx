@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Play, Pause, Maximize, Volume2, VolumeX } from "lucide-react";
 import { MOVIE_DATABASE } from "@/lib/data";
-import "./watch.css";
+import "../watch.css";
 
 const Watch = () => {
   const router = useRouter();
