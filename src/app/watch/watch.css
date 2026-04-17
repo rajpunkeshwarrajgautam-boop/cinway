@@ -1,0 +1,106 @@
+.playerContainer {
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  position: relative;
+  overflow: hidden;
+}
+
+.backButton {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  color: white;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(4px);
+  transition: opacity 300ms;
+}
+
+.backButton:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.videoElement {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.controlsOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 2rem 2rem 2rem;
+  z-index: 40;
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+.controlsOverlay.hidden {
+  opacity: 0;
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--accent-red);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.controlsMain {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: white;
+}
+
+.controlButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movieTitle {
+  flex: 1;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-left: 1rem;
+}
+
+.volumeContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.volumeSlider {
+  width: 100px;
+  cursor: pointer;
+}

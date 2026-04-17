@@ -1,0 +1,65 @@
+.profilesContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.profilesTitle {
+  color: white;
+  font-size: min(8vw, 3.5rem);
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.profilesGrid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.profileItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  group: true;
+}
+
+.profileImageWrapper {
+  width: min(44vw, 10rem);
+  height: min(44vw, 10rem);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+}
+
+.profileItem:hover .profileImageWrapper {
+  border-color: white;
+}
+
+.profileItem:hover .profileName {
+  color: white;
+}
+
+.profileName {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  text-align: center;
+  transition: color var(--transition-fast);
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
