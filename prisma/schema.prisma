@@ -59,12 +59,34 @@ model Profile {
   myList    Favorite[]
 }
 
+model Movie {
+  id          String   @id @default(cuid())
+  tmdbId      Int      @unique
+  title       String
+  description String   @db.Text
+  videoUrl    String
+  thumbnailUrl String
+  backdropUrl String?
+  genre       String
+  duration    String?
+  releaseYear Int
+  rating      Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  favorites   Favorite[]
+
+  @@index([genre])
+  @@index([releaseYear])
+}
+
 model Favorite {
   id        String   @id @default(cuid())
   movieId   String
   profileId String
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([movieId, profileId])
+  @@index([profileId])
 }
