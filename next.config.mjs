@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
   reactStrictMode: true,
   images: {
+    unoptimized: true, // Required for static export
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,8 +16,8 @@ const nextConfig = {
       }
     ]
   },
-  serverExternalPackages: ['@prisma/client', 'bcrypt']
 };
 
 export default nextConfig;
+
 

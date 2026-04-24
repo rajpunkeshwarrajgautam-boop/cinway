@@ -68,7 +68,7 @@ const InfoModal = () => {
             loop
             poster={movie.thumbnailUrl}
             src={movie.videoUrl}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', brightness: '0.7' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.7)' }}
           />
           <div 
             onClick={handleClose}
