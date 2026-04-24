@@ -4,7 +4,7 @@ import axios from 'axios';
 import React, { useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { PlayCircle, Plus, Check, ThumbsUp, ChevronDown } from 'lucide-react';
-import type { Movie } from '@/lib/data';
+import type { Movie } from '@prisma/client';
 import useFavorites from '@/hooks/useFavorites';
 import { useRouter } from 'next/navigation';
 import useInfoModal from '@/hooks/useInfoModal';

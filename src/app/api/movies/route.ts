@@ -1,32 +1,32 @@
 import { NextResponse } from 'next/server';
 import prismadb from '@/lib/prismadb';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const genre = searchParams.get('genre');
-    const limit = parseInt(searchParams.get('limit') || '10');
-
-    let movies;
+    const allMovies = await prismadb.movie.findMany();
     
-    if (genre) {
-      movies = await prismadb.movie.findMany({
-        where: {
-          genre: { contains: genre, mode: 'insensitive' }
-        },
-        take: limit,
-        orderBy: { releaseYear: 'desc' }
-      });
-    } else {
-      movies = await prismadb.movie.findMany({
-        take: limit,
-        orderBy: { releaseYear: 'desc' }
+    if (!allMovies || allMovies.length === 0) {
+      return NextResponse.json({
+        heroMovie: null,
+        trendingMovies: [],
+        actionMovies: [],
+        dramaMovies: []
       });
     }
 
-    return NextResponse.json(movies);
+    const heroMovie = allMovies[0];
+    const trendingMovies = allMovies;
+    const actionMovies = allMovies.filter(m => ['Action', 'Sci-Fi', 'Thriller'].includes(m.genre));
+    const dramaMovies = allMovies.filter(m => ['Drama', 'Crime'].includes(m.genre));
+
+    return NextResponse.json({
+      heroMovie,
+      trendingMovies,
+      actionMovies,
+      dramaMovies
+    });
   } catch (error) {
-    console.error('Error fetching movies:', error);
+    console.log(error);
     return NextResponse.json({ error: 'Failed to fetch movies' }, { status: 500 });
   }
 }

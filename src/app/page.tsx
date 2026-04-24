@@ -3,23 +3,40 @@
 import Navbar from '@/components/layout/Navbar';
 import Billboard from '@/components/movies/Billboard';
 import MovieRow from '@/components/movies/MovieRow';
-import { getHeroMovie, getTrendingMovies, getActionMovies, getDramaMovies, MOVIE_DATABASE } from '@/lib/data';
 import useFavorites from '@/hooks/useFavorites';
 import { useMemo } from 'react';
+import useSWR from 'swr';
+import type { Movie } from '@prisma/client';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
-  const heroMovie = getHeroMovie();
-  const trendingMovies = getTrendingMovies();
-  const actionMovies = getActionMovies();
-  const dramaMovies = getDramaMovies();
-  
+  const { data: movieData, error, isLoading } = useSWR('/api/movies', fetcher);
   const { data: favorites } = useFavorites();
 
   const favoriteMovies = useMemo(() => {
-    if (!favorites) return [];
+    if (!favorites || !movieData?.trendingMovies) return [];
     const favoriteIds = favorites.map((fav: any) => fav.movieId);
-    return MOVIE_DATABASE.filter((movie) => favoriteIds.includes(movie.id));
-  }, [favorites]);
+    return movieData.trendingMovies.filter((movie: Movie) => favoriteIds.includes(movie.id));
+  }, [favorites, movieData]);
+
+  if (isLoading) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-primary)' }}>
+        <div className="spinner"></div>
+        <style jsx>{`
+          .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #e50914; animation: spin 1s ease-in-out infinite; }
+          @keyframes spin { to { transform: rotate(360deg); } }
+        `}</style>
+      </div>
+    );
+  }
+
+  if (error || !movieData) {
+    return <div style={{ color: 'white', textAlign: 'center', marginTop: '20vh' }}>Failed to load movies</div>;
+  }
+
+  const { heroMovie, trendingMovies, actionMovies, dramaMovies } = movieData;
 
   return (
     <main className="page-wrapper" style={{ paddingBottom: '4rem' }}>

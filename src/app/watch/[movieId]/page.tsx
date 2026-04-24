@@ -1,86 +1,63 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { ArrowLeft, Play, Pause, Maximize, Volume2, VolumeX } from "lucide-react";
-import { MOVIE_DATABASE } from "@/lib/data";
+import { ArrowLeft } from "lucide-react";
+import useSWR from "swr";
+import type { Movie } from "@prisma/client";
 import "../watch.css";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Watch = () => {
   const router = useRouter();
   const { movieId } = useParams();
-  const videoRef = useRef<HTMLVideoElement>(null);
   
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
-  const [showControls, setShowControls] = useState(true);
-  
-  const movie = MOVIE_DATABASE.find((m) => m.id === movieId);
+  const { data: movie, error, isLoading } = useSWR<Movie>(`/api/movies/${movieId}`, fetcher);
 
+  // Auto-hide mouse after 3 seconds for a clean cinematic experience
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
     const handleMouseMove = () => {
-      setShowControls(true);
+      document.body.style.cursor = 'default';
       clearTimeout(timeout);
-      timeout = setTimeout(() => setShowControls(false), 3000);
+      timeout = setTimeout(() => {
+        document.body.style.cursor = 'none';
+      }, 3000);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.body.style.cursor = 'default';
+    };
   }, []);
 
-  const togglePlay = useCallback(() => {
-    if (videoRef.current?.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current?.pause();
-      setIsPlaying(false);
-    }
-  }, []);
-
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setProgress(currentProgress);
-    }
-  };
-
-  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (videoRef.current) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const pos = (e.clientX - rect.left) / rect.width;
-      videoRef.current.currentTime = pos * videoRef.current.duration;
-    }
-  };
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const toggleFullScreen = () => {
-    if (videoRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        videoRef.current.requestFullscreen();
-      }
-    }
-  };
-
-  if (!movie) {
+  if (isLoading) {
     return (
-      <div className="playerContainer flex items-center justify-center text-white">
+      <div className="playerContainer flex items-center justify-center text-white bg-black">
+        <div className="spinner"></div>
+        <style jsx>{`
+          .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #e50914; animation: spin 1s ease-in-out infinite; }
+          @keyframes spin { to { transform: rotate(360deg); } }
+        `}</style>
+      </div>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <div className="playerContainer flex items-center justify-center text-white bg-black">
         Movie not found
       </div>
     );
   }
+
+  // Use Vidking player if tmdbId is available, otherwise fallback to the raw videoUrl
+  const videoSrc = movie.tmdbId 
+    ? `https://www.vidking.net/embed/movie/${movie.tmdbId}`
+    : movie.videoUrl;
 
   return (
     <div className="playerContainer">
@@ -92,56 +69,22 @@ const Watch = () => {
         <span className="font-bold text-lg">Watching: {movie.title}</span>
       </nav>
 
-      <video
-        ref={videoRef}
-        className="videoElement"
-        autoPlay
-        src={movie.videoUrl}
-        onTimeUpdate={handleTimeUpdate}
-        onClick={togglePlay}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-      />
-
-      <div className={`controlsOverlay ${!showControls ? 'hidden' : ''}`}>
-        <div className="progressBarContainer" onClick={handleSeek}>
-          <div 
-            className="progressBar" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-
-        <div className="controlsMain">
-          <button className="controlButton" onClick={togglePlay}>
-            {isPlaying ? <Pause size={30} fill="white" /> : <Play size={30} fill="white" />}
-          </button>
-
-          <div className="volumeContainer">
-            <button className="controlButton" onClick={toggleMute}>
-              {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={volume}
-              onChange={(e) => {
-                const val = parseFloat(e.target.value);
-                setVolume(val);
-                if (videoRef.current) videoRef.current.volume = val;
-              }}
-              className="volumeSlider"
-            />
-          </div>
-
-          <h3 className="movieTitle">{movie.title}</h3>
-
-          <button className="controlButton" onClick={toggleFullScreen}>
-            <Maximize size={24} />
-          </button>
-        </div>
-      </div>
+      {movie.tmdbId ? (
+        <iframe
+          src={videoSrc}
+          className="videoElement"
+          allowFullScreen
+          allow="autoplay; fullscreen"
+          frameBorder="0"
+        />
+      ) : (
+        <video
+          className="videoElement"
+          autoPlay
+          controls
+          src={videoSrc}
+        />
+      )}
     </div>
   );
 };

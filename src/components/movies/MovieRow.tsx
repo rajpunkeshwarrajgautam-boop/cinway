@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MovieCard from './MovieCard';
-import type { Movie } from '@/lib/data';
+import type { Movie } from '@prisma/client';
 
 interface MovieRowProps {
   title: string;

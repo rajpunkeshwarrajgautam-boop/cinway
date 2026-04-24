@@ -10,11 +10,11 @@
 
 ## 🚧 Pending (To reach 100%)
 ### Phase 1: Database Integration
-- [ ] Install `axios` and `tsx`
-- [ ] Update `prisma/schema.prisma` with `Movie` model
+- [x] Install `axios` and `tsx`
+- [x] Update `prisma/schema.prisma` with `Movie` model
 - [ ] Run `npx prisma db push`
-- [ ] Create `src/lib/tmdb.ts` for API helpers
-- [ ] Create `prisma/seed.ts` to fetch real movies
+- [x] Create `src/lib/tmdb.ts` for API helpers
+- [x] Create `prisma/seed.ts` to fetch real movies
 - [ ] Run `npm run db:seed`
 
 ### Phase 2: API & Frontend Connection

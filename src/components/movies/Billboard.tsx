@@ -2,7 +2,7 @@
 
 import { Info, Play } from 'lucide-react';
 import Image from 'next/image';
-import type { Movie } from '@/lib/data';
+import type { Movie } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import useInfoModal from '@/hooks/useInfoModal';
 

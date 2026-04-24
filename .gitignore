@@ -39,4 +39,7 @@ __pycache__/
 venv/
 .venv/
 .env
+
+# Local Database
+prisma/dev.db
 ```
