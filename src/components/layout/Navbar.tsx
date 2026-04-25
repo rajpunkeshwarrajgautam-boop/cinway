@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Bell, Menu, X, PlaySquare, LogOut } from 'lucide-react';
+import { Search, Bell, Menu, X, PlaySquare, LogOut, CreditCard } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -126,6 +126,21 @@ export default function Navbar() {
                 gap: '0.5rem'
               }}
             >
+              <Link 
+                href="/plans"
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.75rem', 
+                  color: 'white', 
+                  fontSize: '0.9rem',
+                  padding: '0.25rem',
+                  textDecoration: 'none'
+                }}
+              >
+                <CreditCard size={16} />
+                Subscription
+              </Link>
               <div 
                 onClick={() => signOut()}
                 style={{ 
@@ -134,7 +149,8 @@ export default function Navbar() {
                   gap: '0.75rem', 
                   color: 'white', 
                   fontSize: '0.9rem',
-                  padding: '0.25rem'
+                  padding: '0.25rem',
+                  cursor: 'pointer'
                 }}
               >
                 <LogOut size={16} />
