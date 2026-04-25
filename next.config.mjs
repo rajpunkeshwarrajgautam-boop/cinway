@@ -2,7 +2,6 @@
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  trailingSlash: true,
   reactStrictMode: true,
   images: {
     unoptimized: true, // Required for static export

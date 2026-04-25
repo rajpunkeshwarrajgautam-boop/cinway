@@ -25,4 +25,4 @@
 ### Phase 3: Production Ready
 - [ ] Secure Video Streaming (Signed URLs / Mux)
 - [ ] Stripe Subscription Integration
-- [ ] Deploy to Vercel + Neon DB
+- [x] Deploy to Vercel + Neon DB
