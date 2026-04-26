@@ -10,6 +10,7 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed-tv": "tsx prisma/seed-tv.ts",
     "db:studio": "prisma studio"
   },
   "prisma": {
@@ -27,6 +28,7 @@
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "nodemailer": "^6.9.0",
     "swr": "^2.3.0",
     "zustand": "^5.0.3"
   },
@@ -35,6 +37,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/nodemailer": "^6.4.0",
     "axios": "^1.15.2",
     "eslint": "^8",
     "eslint-config-next": "^15.1.0",

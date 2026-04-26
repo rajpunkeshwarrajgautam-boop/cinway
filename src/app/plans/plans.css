@@ -123,3 +123,16 @@
   border-top-color: white;
   animation: spin 1s ease-in-out infinite;
 }
+
+@media (max-width: 768px) {
+  .plans-header h1 { font-size: 1.8rem; }
+  .plans-header p { font-size: 1rem; }
+  .plans-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  .plan-price { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .plans-container { padding: 100px 3vw 3vw; }
+  .plans-header h1 { font-size: 1.5rem; }
+  .plan-card { padding: 1.5rem; }
+}

@@ -23,6 +23,7 @@ model User {
   sessions       Session[]
   accounts       Account[]
   profiles       Profile[]
+  watchProgress  WatchProgress[]
 }
 
 model Account {
@@ -56,6 +57,7 @@ model Profile {
   id        String   @id @default(cuid())
   name      String
   imageUrl  String
+  avatarUrl String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -78,9 +80,40 @@ model Movie {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   favorites   Favorite[]
+  watchProgress WatchProgress[]
 
   @@index([genre])
   @@index([releaseYear])
+}
+
+model TvShow {
+  id           String   @id @default(cuid())
+  tmdbId       Int      @unique
+  name         String
+  overview     String   @db.Text
+  posterUrl    String
+  backdropUrl  String?
+  genre        String
+  seasons      Int      @default(1)
+  firstAirDate String?
+  rating       Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([genre])
+}
+
+model WatchProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  movieId     String
+  progress    Float    @default(0)
+  lastWatched DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie       Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+  @@index([userId])
 }
 
 model Favorite {

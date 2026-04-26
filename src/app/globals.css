@@ -110,3 +110,21 @@ button {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 1024px) {
+  .heading-hero { font-size: min(6vw, 3rem); }
+  .heading-section { font-size: 1.3rem; }
+}
+
+@media (max-width: 768px) {
+  .heading-hero { font-size: min(8vw, 2.5rem); }
+  .heading-section { font-size: 1.1rem; }
+  .page-wrapper { padding-bottom: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .heading-hero { font-size: min(10vw, 2rem); }
+  .heading-section { font-size: 1rem; margin-bottom: 0.5rem; }
+  .container { padding: 0 3vw; }
+}

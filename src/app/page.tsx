@@ -14,6 +14,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 export default function Home() {
   const { data: movieData, error, isLoading } = useSWR('/api/movies', fetcher);
   const { data: favorites } = useFavorites();
+  const { data: watchProgress } = useSWR('/api/watch-progress', fetcher);
 
   const favoriteMovies = useMemo(() => {
     if (!favorites || !movieData?.trendingMovies) return [];
@@ -21,14 +22,15 @@ export default function Home() {
     return movieData.trendingMovies.filter((movie: Movie) => favoriteIds.includes(movie.id));
   }, [favorites, movieData]);
 
+  const continueWatchingMovies = useMemo(() => {
+    if (!watchProgress || !Array.isArray(watchProgress)) return [];
+    return watchProgress.map((wp: any) => wp.movie).filter(Boolean);
+  }, [watchProgress]);
+
   if (isLoading) {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-primary)' }}>
-        <div className="spinner"></div>
-        <style jsx>{`
-          .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #e50914; animation: spin 1s ease-in-out infinite; }
-          @keyframes spin { to { transform: rotate(360deg); } }
-        `}</style>
+        <div className="spinner" style={{ width: 50, height: 50, border: '3px solid rgba(255,255,255,0.1)', borderRadius: '50%', borderTopColor: '#e50914', animation: 'spin 1s ease-in-out infinite' }} />
       </div>
     );
   }
@@ -45,8 +47,11 @@ export default function Home() {
       <Billboard movie={heroMovie} />
       
       <div style={{ marginTop: '-8vw', position: 'relative', zIndex: 30 }}>
+        {continueWatchingMovies.length > 0 && (
+          <MovieRow title="Continue Watching" movies={continueWatchingMovies} />
+        )}
         {favoriteMovies.length > 0 && (
-          <MovieRow title="My List" movies={favoriteMovies} />
+           <MovieRow title="My List" movies={favoriteMovies} />
         )}
         <MovieRow title="Trending Now" movies={trendingMovies} />
         <MovieRow title="Action Packed" movies={actionMovies} />

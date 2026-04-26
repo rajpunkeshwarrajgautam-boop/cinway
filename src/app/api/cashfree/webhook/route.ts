@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import prismadb from '@/lib/prismadb';
+import { sendSubscriptionEmail } from '@/lib/email';
+
+const PRICING: Record<string, number> = { BASIC: 499, STANDARD: 899, PREMIUM: 1499 };
 
 export async function POST(req: Request) {
   try {
@@ -36,7 +39,7 @@ export async function POST(req: Request) {
         const endDate = new Date();
         endDate.setMonth(endDate.getMonth() + 1); 
 
-        await prismadb.user.update({
+        const updatedUser = await prismadb.user.update({
           where: { id: userId },
           data: {
             subscriptionTier: tier,
@@ -44,6 +47,14 @@ export async function POST(req: Request) {
             subscriptionEndDate: endDate
           }
         });
+
+        if (updatedUser.email) {
+          await sendSubscriptionEmail({
+            to: updatedUser.email,
+            tier,
+            amount: PRICING[tier] || 0,
+          });
+        }
       }
     }
 

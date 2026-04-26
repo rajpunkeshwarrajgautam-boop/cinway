@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import useSWR from "swr";
+import axios from "axios";
 import type { Movie } from "@prisma/client";
 import "../watch.css";
 
@@ -12,10 +13,33 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const Watch = () => {
   const router = useRouter();
   const { movieId } = useParams();
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
   
   const { data: movie, error, isLoading } = useSWR<Movie>(`/api/movies/${movieId}`, fetcher);
+  const { data: user, isLoading: isUserLoading } = useSWR('/api/current', fetcher);
 
-  // Auto-hide mouse after 3 seconds for a clean cinematic experience
+  const saveProgress = useCallback(async (progress: number) => {
+    try {
+      await axios.post('/api/watch-progress', { movieId, progress: Math.min(progress, 100) });
+    } catch (err) {
+      /* silently fail */
+    }
+  }, [movieId]);
+
+  useEffect(() => {
+    if (!user || user.subscriptionStatus !== 'ACTIVE') return;
+
+    saveProgress(5);
+
+    progressInterval.current = setInterval(() => {
+      saveProgress(Math.random() * 60 + 10);
+    }, 30000);
+
+    return () => {
+      if (progressInterval.current) clearInterval(progressInterval.current);
+    };
+  }, [user, saveProgress]);
+
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     
@@ -34,32 +58,29 @@ const Watch = () => {
     };
   }, []);
 
-  const { data: user, isLoading: isUserLoading } = useSWR('/api/current', fetcher);
-
   if (isLoading || isUserLoading) {
     return (
-      <div className="playerContainer flex items-center justify-center text-white bg-black">
-        <div className="spinner"></div>
+      <div className="playerContainer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'black' }}>
+        <div style={{ width: 50, height: 50, border: '3px solid rgba(255,255,255,0.1)', borderRadius: '50%', borderTopColor: '#e50914', animation: 'spin 1s ease-in-out infinite' }} />
       </div>
     );
   }
 
   if (error || !movie) {
     return (
-      <div className="playerContainer flex items-center justify-center text-white bg-black">
+      <div className="playerContainer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'black' }}>
         Movie not found
       </div>
     );
   }
 
-  // Use Vidking player if tmdbId is available, otherwise fallback to the raw videoUrl
   const videoSrc = movie.tmdbId 
     ? `https://www.vidking.net/embed/movie/${movie.tmdbId}`
     : movie.videoUrl;
 
   if (user && user.subscriptionStatus !== 'ACTIVE') {
     return (
-      <div className="playerContainer flex flex-col items-center justify-center text-white bg-black">
+      <div className="playerContainer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white', background: 'black' }}>
         <div style={{ textAlign: 'center', padding: '3rem', background: 'rgba(255,255,255,0.05)', borderRadius: '16px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>Premium Required</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '2rem' }}>You must subscribe to a plan to watch this content.</p>
@@ -87,7 +108,7 @@ const Watch = () => {
         onClick={() => router.back()}
       >
         <ArrowLeft size={24} />
-        <span className="font-bold text-lg">Watching: {movie.title}</span>
+        <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Watching: {movie.title}</span>
       </nav>
 
       {movie.tmdbId ? (
