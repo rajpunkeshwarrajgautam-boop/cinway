@@ -8,10 +8,11 @@
   - Environment variables injected securely into Vercel.
   - Next.js routing issues (404 on `/auth`) on Vercel deployment fixed by removing `trailingSlash: true` from config.
 
-## Pending Actions
-- Git add, commit, and push the changes to trigger a new Vercel deployment.
-
-## Tech Stack Rules Active
+## Pending Actions (Evening Session)
+- **Polish Phase**: ✅ Complete
+  - Fixed broken navigation links in `Navbar.tsx` by adding `/list` and Coming Soon pages for others.
+  - Debugged client-side "Application error" on the `/watch/[movieId]` page by ensuring `isUserLoading` is awaited.
+  - Implemented functionality for the "More Info" button on the hero banner by connecting `InfoModal` to the Prisma `/api/movies` endpoint.
 - Next.js 15 App Router
 - Prisma with PostgreSQL (Neon)
 - NextAuth + Firebase

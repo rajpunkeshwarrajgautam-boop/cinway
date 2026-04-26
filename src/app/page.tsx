@@ -3,6 +3,7 @@
 import Navbar from '@/components/layout/Navbar';
 import Billboard from '@/components/movies/Billboard';
 import MovieRow from '@/components/movies/MovieRow';
+import InfoModal from '@/components/movies/InfoModal';
 import useFavorites from '@/hooks/useFavorites';
 import { useMemo } from 'react';
 import useSWR from 'swr';
@@ -51,6 +52,8 @@ export default function Home() {
         <MovieRow title="Action Packed" movies={actionMovies} />
         <MovieRow title="Critically Acclaimed Dramas" movies={dramaMovies} />
       </div>
+
+      <InfoModal />
 
       <footer style={{ marginTop: '8rem', textAlign: 'center', color: 'var(--text-muted)' }}>
         <p>Cinway &copy; {new Date().getFullYear()}</p>

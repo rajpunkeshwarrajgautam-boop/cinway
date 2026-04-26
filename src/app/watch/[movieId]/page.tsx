@@ -34,14 +34,12 @@ const Watch = () => {
     };
   }, []);
 
-  if (isLoading) {
+  const { data: user, isLoading: isUserLoading } = useSWR('/api/current', fetcher);
+
+  if (isLoading || isUserLoading) {
     return (
       <div className="playerContainer flex items-center justify-center text-white bg-black">
         <div className="spinner"></div>
-        <style jsx>{`
-          .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #e50914; animation: spin 1s ease-in-out infinite; }
-          @keyframes spin { to { transform: rotate(360deg); } }
-        `}</style>
       </div>
     );
   }
@@ -58,8 +56,6 @@ const Watch = () => {
   const videoSrc = movie.tmdbId 
     ? `https://www.vidking.net/embed/movie/${movie.tmdbId}`
     : movie.videoUrl;
-
-  const { data: user } = useSWR('/api/current', fetcher);
 
   if (user && user.subscriptionStatus !== 'ACTIVE') {
     return (

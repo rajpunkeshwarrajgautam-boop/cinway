@@ -4,12 +4,22 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { X, Play } from 'lucide-react';
 
 import useInfoModal from '@/hooks/useInfoModal';
-import { MOVIE_DATABASE } from '@/lib/data';
 import MovieCard from './MovieCard';
+import useSWR from 'swr';
+import type { Movie } from '@prisma/client';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const InfoModal = () => {
   const { isOpen, closeModal, movieId } = useInfoModal();
   const [isVisible, setIsVisible] = useState(!!isOpen);
+
+  const { data: movie, error } = useSWR<Movie>(
+    movieId ? `/api/movies/${movieId}` : null,
+    fetcher
+  );
+
+  const { data: allMovies } = useSWR(movieId ? `/api/movies` : null, fetcher);
 
   useEffect(() => {
     setIsVisible(!!isOpen);
@@ -22,14 +32,11 @@ const InfoModal = () => {
     }, 300);
   }, [closeModal]);
 
-  if (!isOpen || !movieId) return null;
+  if (!isOpen || !movieId || !movie) return null;
 
-  const movie = MOVIE_DATABASE.find((m) => m.id === movieId);
-  if (!movie) return null;
-
-  const recommendations = MOVIE_DATABASE.filter(
-    (m) => m.genre === movie.genre && m.id !== movie.id
-  );
+  const recommendations = allMovies?.trendingMovies
+    ? allMovies.trendingMovies.filter((m: Movie) => m.genre === movie.genre && m.id !== movie.id)
+    : [];
 
   return (
     <div 

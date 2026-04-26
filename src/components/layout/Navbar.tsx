@@ -58,10 +58,10 @@ export default function Navbar() {
         </Link>
         <div className="nav-links" style={{ display: 'none', gap: '1.5rem', fontSize: '0.9rem' }}>
           <Link href="/" style={{ color: 'var(--text-primary)', fontWeight: 500 }}>Home</Link>
-          <Link href="/series" style={{ color: 'var(--text-secondary)' }}>TV Shows</Link>
-          <Link href="/movies" style={{ color: 'var(--text-secondary)' }}>Movies</Link>
-          <Link href="/latest" style={{ color: 'var(--text-secondary)' }}>New & Popular</Link>
-          <Link href="/list" style={{ color: 'var(--text-secondary)' }}>My List</Link>
+          <Link href="/" style={{ color: 'var(--text-secondary)' }}>TV Shows</Link>
+          <Link href="/" style={{ color: 'var(--text-secondary)' }}>Movies</Link>
+          <Link href="/" style={{ color: 'var(--text-secondary)' }}>New & Popular</Link>
+          <Link href="/" style={{ color: 'var(--text-secondary)' }}>My List</Link>
         </div>
       </div>
 
