@@ -38,7 +38,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/nodemailer": "^6.4.0",
-    "axios": "^1.15.2",
+    "axios": "^1.7.9",
     "eslint": "^8",
     "eslint-config-next": "^15.1.0",
     "firebase-tools": "^15.15.0",
