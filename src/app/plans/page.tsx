@@ -50,7 +50,7 @@ export default function Plans() {
       <Navbar />
       <div className="plans-container">
         <div className="plans-header">
-          <h1>Choose the plan that's right for you</h1>
+          <h1>Choose the plan that&apos;s right for you</h1>
           <p>Watch all you want. Ad-free.</p>
         </div>
         

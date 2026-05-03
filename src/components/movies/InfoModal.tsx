@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { X, Play } from 'lucide-react';
 
 import useInfoModal from '@/hooks/useInfoModal';
@@ -10,20 +10,24 @@ import type { Movie } from '@prisma/client';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+/** Remount when the opened movie changes so open animation state resets without an effect. */
 const InfoModal = () => {
-  const { isOpen, closeModal, movieId } = useInfoModal();
-  const [isVisible, setIsVisible] = useState(!!isOpen);
+  const movieId = useInfoModal((s) => s.movieId);
+  const isOpen = useInfoModal((s) => s.isOpen);
+  const key = isOpen && movieId ? movieId : 'closed';
+  return <InfoModalBody key={key} />;
+};
 
-  const { data: movie, error } = useSWR<Movie>(
+function InfoModalBody() {
+  const { isOpen, closeModal, movieId } = useInfoModal();
+  const [isVisible, setIsVisible] = useState(true);
+
+  const { data: movie } = useSWR<Movie>(
     movieId ? `/api/movies/${movieId}` : null,
     fetcher
   );
 
   const { data: allMovies } = useSWR(movieId ? `/api/movies` : null, fetcher);
-
-  useEffect(() => {
-    setIsVisible(!!isOpen);
-  }, [isOpen]);
 
   const handleClose = useCallback(() => {
     setIsVisible(false);
@@ -148,7 +152,7 @@ const InfoModal = () => {
                 More Like This
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
-                {recommendations.map((m) => (
+                {recommendations.map((m: Movie) => (
                   <MovieCard key={m.id} movie={m} />
                 ))}
               </div>
@@ -158,6 +162,6 @@ const InfoModal = () => {
       </div>
     </div>
   );
-};
+}
 
 export default InfoModal;

@@ -4,13 +4,20 @@ import axios from 'axios';
 import React, { useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import { PlayCircle, Plus, Check, ThumbsUp, ChevronDown } from 'lucide-react';
-import type { Movie } from '@prisma/client';
+import type { Movie as PrismaMovie } from '@prisma/client';
 import useFavorites from '@/hooks/useFavorites';
 import { useRouter } from 'next/navigation';
 import useInfoModal from '@/hooks/useInfoModal';
 
+export type MovieCardMovie = Pick<
+  PrismaMovie,
+  'id' | 'title' | 'description' | 'videoUrl' | 'thumbnailUrl' | 'genre' | 'releaseYear'
+> & {
+  duration?: string | null;
+};
+
 interface MovieCardProps {
-  movie: Movie;
+  movie: MovieCardMovie;
 }
 
 export default function MovieCard({ movie }: MovieCardProps) {
@@ -102,7 +109,6 @@ export default function MovieCard({ movie }: MovieCardProps) {
           <div 
             onClick={(e) => { e.stopPropagation(); toggleFavorites(); }}
             style={{ 
-              color: 'white', 
               border: '1px solid white', 
               borderRadius: '50%', 
               width: '24px', 

@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import prismadb from "@/lib/prismadb";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { movieId: string } }
+  _request: Request,
+  { params }: { params: Promise<{ movieId: string }> }
 ) {
   try {
     const { movieId } = await params;

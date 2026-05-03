@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { Movie } from '@prisma/client';
 import prismadb from '@/lib/prismadb';
 
 export async function GET() {
@@ -16,8 +17,10 @@ export async function GET() {
 
     const heroMovie = allMovies[0];
     const trendingMovies = allMovies;
-    const actionMovies = allMovies.filter(m => ['Action', 'Sci-Fi', 'Thriller'].includes(m.genre));
-    const dramaMovies = allMovies.filter(m => ['Drama', 'Crime'].includes(m.genre));
+    const actionMovies = allMovies.filter((m: Movie) =>
+      ['Action', 'Sci-Fi', 'Thriller'].includes(m.genre)
+    );
+    const dramaMovies = allMovies.filter((m: Movie) => ['Drama', 'Crime'].includes(m.genre));
 
     return NextResponse.json({
       heroMovie,

@@ -3,10 +3,13 @@ import prismadb from '@/lib/prismadb';
 
 export async function GET(req: Request) {
   try {
-    const authHeader = req.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) {
+      return new NextResponse('Cron secret not configured', { status: 500 });
+    }
 
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    const authHeader = req.headers.get('authorization');
+    if (authHeader !== `Bearer ${cronSecret}`) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
@@ -28,7 +31,7 @@ export async function GET(req: Request) {
       expiredCount: expiredUsers.count,
       timestamp: now.toISOString(),
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Cron job failed' }, { status: 500 });
   }
 }

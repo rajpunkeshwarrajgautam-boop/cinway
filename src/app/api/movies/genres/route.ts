@@ -13,7 +13,7 @@ export async function GET(req: Request) {
       select: { genre: true },
       distinct: ['genre'],
     });
-    const uniqueGenres = genres.map((g) => g.genre);
+    const uniqueGenres = genres.map((g: { genre: string }) => g.genre);
 
     return NextResponse.json({ movies, genres: uniqueGenres });
   } catch (error) {
